@@ -1,0 +1,2 @@
+void deletePeer();
+bool manageSlave();
