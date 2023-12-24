@@ -5,33 +5,17 @@
 #define AMPLITUDE 1000      // Depending on your audio source level, you may need to alter this value. Can be used as a 'sensitivity' control.
 #define AUDIO_IN_PIN GPIO_NUM_9      // Signal in on this pin
 
-#define MAX_MILLIAMPS 2000                         // Careful with the amount of power here if running off USB port
-const int BRIGHTNESS_SETTINGS[3] = {5, 70, 200};   // 3 Integer array for 3 brightness settings (based on pressing+holding BTN_PIN)
-#define LED_VOLTS 5                                // Usually 5 or 12
 #define NUM_BANDS 8                               // To change this, you will need to change the bunch of if statements describing the mapping from bins to bands
 #define NOISE 500                                  // Used as a crude noise filter, values below this are ignored
-const uint8_t kMatrixWidth = 16;                   // Matrix width
-const uint8_t kMatrixHeight = 16;                  // Matrix height
-#define NUM_LEDS (kMatrixWidth * kMatrixHeight)    // Total number of LEDs
-#define BAR_WIDTH (kMatrixWidth / (NUM_BANDS - 1)) // If width >= 8 light 1 LED width per bar, >= 16 light 2 LEDs width bar etc
-#define TOP (kMatrixHeight - 0)                    // Don't allow the bars to go offscreen
-#define SERPENTINE true                            // Set to false if you're LEDS are connected end to end, true if serpentine
 
 // Sampling and FFT stuff
 unsigned int sampling_period_us;
 byte peak[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // The length of these arrays must be >= NUM_BANDS
-int oldBarHeights[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int bandValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 double vReal[SAMPLES];
 double vImag[SAMPLES];
 unsigned long newTime;
 arduinoFFT FFT = arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ);
-
-// Button stuff
-int buttonPushCounter = 0;
-bool autoChangePatterns = false;
-
-uint8_t colorTimer = 0;
 
 void setup()
 {
@@ -59,8 +43,6 @@ void loop()
         { /* chill */
         }
     }
-
-    FFT = arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ);
 
     // Compute FFT
     FFT.DCRemoval();
